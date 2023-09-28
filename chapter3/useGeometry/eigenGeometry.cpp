@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     // 对于仿射变换和射影变换，使用Eigen::Affine3d和Eigen::Projective3d即可
 
     // 四元数
-    // 可以直接把AngleAxis赋值给四元数，反之亦然
+    // 可以直接把AngleAxis赋值给四元数，反之亦然;也可以在有参构造中传入彼此用于初始化
     Quaterniond q(rotation_vector); // Quaterniond的有参构造，参数是AngleAxisd类对象
     cout << "quaternion from rotaiton vector = "
          << q.coeffs().transpose() << endl; // 请注意coeffs()的顺序是(x, y, z, w)，w为实部，前三者为虚部
