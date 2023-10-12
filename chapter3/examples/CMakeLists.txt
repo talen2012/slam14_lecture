@@ -12,7 +12,7 @@ add_executable(plotTrajectory plotTrajectory.cpp)
 
 find_package(Pangolin REQUIRED)
 if(Pangolin_FOUND)
-    include_directories(${Pangolin_INCLUDE_DIRS})
+    include_directories(${Pangolin_INCLUDE_DIRS}) #实际上Pangolin_INCLUDE_DIRS这个变量内容为空，猜测库文件里已经包含了头文件信息
     target_link_libraries(plotTrajectory ${Pangolin_LIBRARIES})
     message(STATUS "Pangolin_LIBRARIES = ${Pangolin_LIBRARIES}")
 else(Pangolin_FOUND)
