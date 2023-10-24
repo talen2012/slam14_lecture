@@ -11,9 +11,9 @@ using namespace std;
 using namespace Eigen;
 
 // path to trajectory file
-string trajectory_file = "trajectory.txt"; // 注意，使用相对路径时，根目录是执行可执行文件时，系统的cwd，
+string trajectory_file = "./examples/trajectory.txt"; // 注意，使用相对路径时，根目录是执行可执行文件时，系统的cwd，
 // 因此要将该文本文件复制到执行可执行文件时的目录才能打开成功，这里在build目录下运行"./examples/plotTrajectory"
-// 要将trajectory.txt复制到build目录
+// 要将trajectory.txt复制到build/examples目录
 
 void DrawTrajectory(vector<Isometry3d, Eigen::aligned_allocator<Isometry3d>>);
 
