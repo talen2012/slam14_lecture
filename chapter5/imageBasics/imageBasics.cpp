@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    // 读取argv[1]指定的图像
+    // 读取argv[1]指定的图像，cv::Mat按行优先方式存储
     cv::Mat image;
     image = cv::imread(argv[1]); // cv::imread()函数读取指定路径下的图像
 
@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 
     // 遍历图像，请注意以下遍历方式也可用于随即像素访问
     // 使用std::chrono给算法计时
+    // steady_clock的成员time_point展开是chrono::time_point<chrono::steadt_clock, chrono::nanoseconds>
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
     for (size_t y = 0; y < image.rows; y++)
     {

@@ -22,8 +22,11 @@ int main(int argc, char **argv)
     {
         for (int u = 0; u < cols; u++)
         {
-            // 按照公式计算点(u, v)对应到畸变图像中的坐标(u_distorted, v_distorted);
-            // 畸变发生在像平面，先转换到像平面坐标再转换会像素平面坐标
+            /**
+             * 按照公式计算点(u, v)对应到畸变图像中的坐标(u_distorted, v_distorted);
+             * 畸变发生在归一化成像平面，先转换到归一化成像平面坐标
+             * 在归一化成相平面畸变后，再转换回像素平面坐标
+            */
             double x = (u - cx) / fx, y = (v - cy) / cy;
             double r = sqrt(x * x + y * y);
             double x_distorted = x * (1 + k1 * r * r + k2 * r * r * r * r) + 2 * p1 * x * y + p2 * (r * r + 2 * x * x);
