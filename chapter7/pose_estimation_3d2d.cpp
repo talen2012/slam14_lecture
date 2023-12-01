@@ -1,5 +1,5 @@
 #include <iostream>
-#include <opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>                          // OpenCV基础数据类型Mat，Vec和Point等，以及算数运算
 #include <opencv2/features2d/features2d.hpp>              // OpenCV提取特征点，绘制关键点，绘制匹配点
 #include <opencv2/highgui/highgui.hpp>                    // OpenCV图像显示相关
 #include <opencv2/calib3d/calib3d.hpp>                    // OpenCV本质矩阵、基础矩阵、单应矩阵和位姿恢复，解PnP及标定
@@ -7,11 +7,11 @@
 #include <g2o/core/base_vertex.h>                         // G2O顶点基类，自定义顶点需要继承该类，并重载setToOriginImpl()重置顶点函数和oplusImpl()更新顶点函数
 #include <g2o/core/base_unary_edge.h>                     // G2O单边基类，自定义单边需要继承该类，并添加有参构造函数、重载computeError()计算残差函数和lineari_ZeOplus()计算梯度函数
 #include <g2o/core/sparse_optimizer.h>                    // G2O核心优化器
-#include <g2o/core/block_solver.h>                        // G2O块求解器，包含线性求解器和系数求解器
+#include <g2o/core/block_solver.h>                        // G2O块求解器，包含一个线性求解器和一个稀疏求解器
 #include <g2o/core/solver.h>                              // G2O求解器，继承自块求解器
 #include <g2o/core/optimization_algorithm_gauss_newton.h> // G2O优化算法 高斯牛顿
 #include <g2o/solvers/dense/linear_solver_dense.h>        // G2O稠密矩阵线性求解器
-#include "sophus/se3.hpp"                                 // Sophus李群李代数，SE3群
+#include "sophus/se3.hpp"                                 // Sophus李群李代数包，SE3群
 #include <chrono>
 
 using namespace std;
@@ -324,7 +324,7 @@ public:
     // 2. 重载computeError()计算残差函数
     virtual void computeError() override
     {
-        // addVertex()后，会给图结构中的_vertices赋值
+        // _vertices是hyper_graph中Edge类的成员，最终被BaseUnaryEdge继承
         const VertexPose *v = static_cast<VertexPose *>(_vertices[0]); // 基类指针转换为派生类指针，可能会越界访问，除非你知道自己在干什么
         Sophus::SE3d T = v->estimate();
         Eigen::Vector3d pos_pixel = _K * (T * _pos3d);
@@ -375,6 +375,7 @@ void bundleAdjustmentG2O(
     // template <int _PoseDim, int _LandmarkDim> struct BlockSolverTraits
     typedef g2o::BlockSolver<g2o::BlockSolverTraits<6, 3>> BlockSolverType;           // pose is 6, landmark is 3
     // 2. 基于块求解器类型，定义相应的线性求解器类型
+    // typedef Eigen::Matrix<number_t, PoseDim, PoseDim, Eigen::ColMajor> PoseMatrixType;
     typedef g2o::LinearSolverDense<BlockSolverType::PoseMatrixType> LinearSolverType; 
     // 3. 选择梯度下降方法，可以从GN, LM, DogLeg 中选，并将求解器指针作为参数传入
     auto optim_method = new g2o::OptimizationAlgorithmGaussNewton(
@@ -416,8 +417,10 @@ void bundleAdjustmentG2O(
     }
 
     chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
-    optimizer.setVerbose(true);
+    // -- 第四步：执行优化
+    // 1. 初始化
     optimizer.initializeOptimization();
+    // 2. 指定迭代次数
     optimizer.optimize(10);
     chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
     chrono::duration<double> time_used = chrono::duration_cast<chrono::duration<double>>(t2 - t1);

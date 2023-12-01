@@ -3,7 +3,7 @@ using namespace std;
 
 #include <cmath>
 #include <Eigen/Core>
-#include <Eigen/Geometry>
+#include <Eigen/Geometry> // Eigen的旋转变换、欧式变换、仿射变换和射影变换
 using namespace Eigen;
 
 // 本程序演示了Eigen几何模块的使用方法
