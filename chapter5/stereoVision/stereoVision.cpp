@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include <Eigen/Core>
-#include "pangolin/pangolin.h"
+#include <pangolin/pangolin.h>
 #include <unistd.h>
 
 using namespace std;
