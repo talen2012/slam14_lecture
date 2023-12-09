@@ -1,3 +1,8 @@
+// // 本程序是视觉SLAM14讲第7讲课后习题6的解答
+// 原先不考虑第一个相机的位姿前提是设定第一个相机的坐标系为世界坐标系
+// 而考虑第一个相机的观测时，则第一个相机的位姿节点是未知的，因此需将第一个相机的位姿作为新增的待优化节点，连接的是一元边，
+// 可以说两个顶点是孤立的，相当于在一次优化中分别对相机1和2做了一次PNP求解。
+
 #include <iostream>
 #include <opencv2/core/core.hpp>                          // OpenCV基础数据类型Mat，Vec和Point等，以及算数运算
 #include <opencv2/features2d/features2d.hpp>              // OpenCV提取特征点，绘制关键点，绘制匹配点
@@ -65,9 +70,7 @@ int main(int argc, char **argv)
     // 建立3D点
     Mat d1 = imread(img_depth1_path, CV_LOAD_IMAGE_UNCHANGED); // 深度图为16位无符号数，单通道图像
     Mat K = (Mat_<double>(3, 3) << 520.9, 0, 325.1, 0, 521.0, 249.7, 0, 0, 1);
-    // 原先不考虑第一个相机的位姿前提是设定第一个相机的坐标系为世界坐标系
-    // 而考虑第一个相机的观测时，则第一个相机的位姿节点是未知的，因此需将第一个相机的位姿作为新增的待优化节点，连接的是一元边，
-    // 可以说两个顶点是孤立的，相当于在一次优化中分别对相机1和2做了一次PNP求解。
+    
     vector<Point3f> pts_3d;
     vector<Point2f> pts1_2d; // 新增特征点(路标)在相机1中的投影
     vector<Point2f> pts2_2d;
