@@ -38,13 +38,21 @@ include_directories("../3rdparty/Sophus")
 # 必须手动添加FindG2O.cmake文件，并且指定CMAKE_MODULE_PATH
 find_package(G2O REQUIRED)
 include_directories(${G2O_INCLUDE_DIR}) # 注意结尾是DIR不是DIRS
+
+# 查找Ceres包
+find_package(Ceres REQUIRED)
+include_directories((${CERES_INCLUDE_DIRS}))
  
-# PnP: 相机1坐标系作为世界坐标系，估计相机2的位姿
+# PnP: 相机1坐标系作为世界坐标系，估计相机2的位姿，使用G2O优化
 add_executable(pose_estimation_3d2d pose_estimation_3d2d.cpp)
 target_link_libraries(pose_estimation_3d2d ${OpenCV_LIBS} g2o_core g2o_stuff)
 # PnP: 考虑相机1的位姿，但将1_depth.png视为世界坐标系下获取的数据，分别估计相机1、2的位姿
 add_executable(p6_pose_estimation_3d2d_considerT1 p6_pose_estimation_3d2d_considerT1.cpp)
 target_link_libraries(p6_pose_estimation_3d2d_considerT1 ${OpenCV_LIBS} g2o_core g2o_stuff)
+# PnP: 相机1坐标系作为世界坐标系，估计相机2的位姿，使用Ceres优化
+add_executable(p10.1_pose_estimation_3d2d_ceres p10.1_pose_estimation_3d2d_ceres.cpp)
+target_link_libraries(p10.1_pose_estimation_3d2d_ceres ${OpenCV_LIBS} ${CERES_LIBRARIES})
+
 
 # ICP：已知相机1、2坐标系下的空间3d点坐标，估计相机1到相机2的位姿
 add_executable(pose_estimation_3d3d_T21 pose_estimation_3d3d_T21.cpp)
@@ -55,3 +63,6 @@ target_link_libraries(pose_estimation_3d3d_T12 ${OpenCV_LIBS} ${G2O_CORE_LIBRARY
 # ICP：已知相机1坐标系下的空间3d点坐标，同时估计相机2坐标系下空间3d点的坐标和相机2到相机1的位姿
 add_executable(p7_pose_estimation_3d3d_T12_considerP2 p7_pose_estimation_3d3d_T12_considerP2.cpp)
 target_link_libraries(p7_pose_estimation_3d3d_T12_considerP2 ${OpenCV_LIBS} ${G2O_CORE_LIBRARY} ${G2O_STUFF_LIBRARY})
+# ICP：已知相机1、2坐标系下的空间3d点坐标，估计相机2到相机1的位姿
+add_executable(p10.2_pose_estimation_3d3d_T12_ceres p10.2_pose_estimation_3d3d_T12_ceres.cpp)
+target_link_libraries(p10.2_pose_estimation_3d3d_T12_ceres ${OpenCV_LIBS} ceres)
